@@ -1,59 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
     <script>
-var x = id => document.getElementById(id)
-logic = {
-    f() {
-        fetch("http://localhost:3000/posts/").then(v => v.json()).then(v => {
-            x("cont").innerHTML = v.map(row => `<div onclick="logic.g('${row.id}', '${row.author}', '${row.title}')">${row.author}: ${row.title}</div>`).join("")
-        })
-        if (x("cont").innerHTML === "") {
-            x("backButton").style.display = "none"; 
-        } else {
-            x("backButton").style.display = "block";
+        var x = id => document.getElementById(id)
+        logic = {
+            f() {
+                fetch("http://localhost:3000/posts/").then(v => v.json()).then(v => {
+                    x("cont").innerHTML = v.map(row => `<div onclick="logic.g('${row.id}', '${row.author}', '${row.title}')">${row.author}: ${row.title}</div>`).join("")
+                })
+                if (x("cont").innerHTML === "") {
+                    x("backButton").style.display = "none"; 
+                } else {
+                    x("backButton").style.display = "block";
+                }
+                x("newButton").style.display = "none"; 
+            },
+            g(id, author, title) {
+                x("cont").innerHTML=`
+                    <form>
+                        <input id="i1" value="${author}" /><br>
+                        <input id="i2" value="${title}" /><br>
+                        <div class="button" onclick="logic.h('${id}')">Módosít</div>
+                        <div class="button" onclick="logic.i('${id}')">Törlés</div>
+                        <button onclick="logic.f()">Vissza</button>
+                    </form>
+                `
+                x("newButton").style.display = "none"; 
+                x("backButton").style.display = "none"; 
+            },
+            h(id) {
+                tosend = {id, author: x("i1").value, title: x("i2").value}
+                fetch(`http://localhost:3000/posts/${id}`, {method: "PUT", headers: { "Content-Type": "application/json"}, body: JSON.stringify(tosend)})
+            },
+            i(id) {
+                todelete = {id, author: x("i1").value, title: x("i2").value}
+                fetch(`http://localhost:3000/posts/${id}`, {method: "DELETE", headers: { "Content-Type": "application/json"}, body: JSON.stringify(todelete)})
+            },
+            n() {
+                x("cont").innerHTML=`
+                    <form>
+                        <input id="i1" /><br>
+                        <input id="i2" /><br>
+                        <div class="button" onclick="logic.k()">Felvesz</div>
+                        <button onclick="logic.f()">Vissza</button>
+                    </form>
+                `
+                x("newButton").style.display = "none"; 
+                x("backButton").style.display = "none"; 
+            },
+            k() {
+                tonew = { author: x("i1").value, title: x("i2").value}
+                fetch(`http://localhost:3000/posts/`, {method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(tonew)})
+            }
         }
-        x("newButton").style.display = "none"; 
-    },
-    g(id, author, title) {
-        x("cont").innerHTML=`
-            <form>
-                <input id="i1" value="${author}" /><br>
-                <input id="i2" value="${title}" /><br>
-                <div class="button" onclick="logic.h('${id}')">Módosít</div>
-                <div class="button" onclick="logic.i('${id}')">Törlés</div>
-                <button onclick="logic.f()">Vissza</button>
-            </form>
-        `
-        x("newButton").style.display = "none"; 
-        x("backButton").style.display = "none"; 
-    },
-    h(id) {
-        tosend = {id, author: x("i1").value, title: x("i2").value}
-        fetch(`http://localhost:3000/posts/${id}`, {method: "PUT", headers: { "Content-Type": "application/json"}, body: JSON.stringify(tosend)})
-    },
-    i(id) {
-        todelete = {id, author: x("i1").value, title: x("i2").value}
-        fetch(`http://localhost:3000/posts/${id}`, {method: "DELETE", headers: { "Content-Type": "application/json"}, body: JSON.stringify(todelete)})
-    },
-    n() {
-        x("cont").innerHTML=`
-            <form>
-                <input id="i1" /><br>
-                <input id="i2" /><br>
-                <div class="button" onclick="logic.k()">Felvesz</div>
-                <button onclick="logic.f()">Vissza</button>
-            </form>
-        `
-        x("newButton").style.display = "none"; 
-        x("backButton").style.display = "none"; 
-    },
-    k() {
-        tonew = { author: x("i1").value, title: x("i2").value}
-        fetch(`http://localhost:3000/posts/`, {method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(tonew)})
-    }
-}
-
-
     </script>
 <head>
     <meta charset="UTF-8">
